@@ -1,0 +1,23 @@
+ARG BUILDER_IMAGE="docker.io/golang:1.20.5-bookwork@sha256:3164c26b2e170b18e2325aa0554699e7bb19a658333601659c04838855897f7a"
+
+FROM ${BUILDER_IMAGE} AS builder
+WORKDIR /project
+COPY \
+ --chmod=777 \
+ . .
+RUN scripts/build.sh
+
+FROM scratch AS runner-from-builder
+COPY \
+  --from=builder \
+  --chmod=111 \
+  /project/app /project/config.yml ./
+
+ENTRYPOINT [ "./app" ]
+
+FROM scratch AS runner
+COPY \
+  --chmod=111 \
+  app config.yml ./
+
+ENTRYPOINT [ "./app" ]

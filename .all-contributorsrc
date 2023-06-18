@@ -8,6 +8,16 @@
   "commit": false,
   "contributorsSortAlphabetically": false,
   "contributors": [
+    {
+      "login": "turing85",
+      "name": "Marco Bungart",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32584495?v=4",
+      "profile": "http://turing85.github.io",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    }
   ],
   "commitConvention": "angular",
   "contributorsPerLine": 7,

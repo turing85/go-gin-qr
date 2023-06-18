@@ -17,16 +17,19 @@ function build_go() {
   go test
   echo "----------------------------------------"
   echo "Building application"
-  CGO_ENABLED=0 `# Enable static linking` \
-    go build \
-      -ldflags="-s -w" `# omit symbol table (-s) and DWARF symbol table (-w)` \
-      -o app \
-      -tags netgo `# Necessary so that the executable is self-contained (i.e. fully statically linked)`
+  go build \
+    -ldflags="-s -w" `# omit symbol table (-s) and DWARF symbol table (-w)` \
+    -o app \
+    -tags netgo
+  echo "----------------------------------------"
+  echo "Compressing application"
+  upx --brute app
   echo "========================================"
 }
 
 function build() {
   cd ..
+  BUILD_CONTAINER="yes"
   build_go
   build_container "Containerfile"
 }

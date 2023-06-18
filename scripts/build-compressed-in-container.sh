@@ -7,7 +7,7 @@ source build-commons.sh
 function build() {
   cd ..
   BUILD_CONTAINER="yes"
-  build_container "Containerfile.build-in-container"
+  build_container "Containerfile.build-and-compress-in-container"
 }
 
 build

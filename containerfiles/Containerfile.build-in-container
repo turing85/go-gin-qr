@@ -7,17 +7,14 @@ COPY \
  . .
 RUN scripts/build.sh
 
-FROM scratch AS runner-from-builder
+FROM scratch AS runner
+COPY \
+  --from=builder \
+  --chmod=444 \
+  /project/config.yml /project/config.yml ./
 COPY \
   --from=builder \
   --chmod=111 \
-  /project/app /project/config.yml ./
-
-ENTRYPOINT [ "./app" ]
-
-FROM scratch AS runner
-COPY \
-  --chmod=111 \
-  app config.yml ./
+  /project/app ./
 
 ENTRYPOINT [ "./app" ]

@@ -1,0 +1,9 @@
+FROM scratch AS runner
+COPY \
+  --chmod=444 \
+  app config.yml ./
+COPY \
+  --chmod=111 \
+  app ./
+
+ENTRYPOINT [ "./app" ]

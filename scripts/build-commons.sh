@@ -56,10 +56,10 @@ function construct_full_build_command() {
   local backslash=\\
   cat <<EOF
 ${1} build ${backslash}
-  --file $(pwd)/containerfiles/Containerfile.scratch ${backslash}
+  --file $(pwd)/containerfiles/${2} ${backslash}
   --format oci ${backslash}
   --tag "$(get_registry)/$(get_registry_repository)/$(get_image_name):$(get_image_tag)" ${backslash}
-  --target ${2} ${backslash}
+  --target runner ${backslash}
   $(pwd)
 EOF
 }

@@ -7,6 +7,7 @@ function clean() {
   cd ..
   go clean
   rm -rf app
+  rm -rf app.upx
 }
 
 clean "${@}"

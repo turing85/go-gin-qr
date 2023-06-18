@@ -1,0 +1,15 @@
+{
+  "projectName": "go-gin-qr",
+  "projectOwner": "turing85",
+  "files": [
+    "CONTRIBUTORS.md",
+    "README.adoc"
+  ],
+  "commit": false,
+  "contributorsSortAlphabetically": false,
+  "contributors": [
+  ],
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "commitType": "docs"
+}

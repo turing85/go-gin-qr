@@ -1,0 +1,50 @@
+= QR Code Generator web service in go
+
+== Application
+.Building the application
+[source, bash]
+----
+scripts/build.sh
+----
+
+== Container image
+.Build a container image
+[source, bash]
+----
+BUILD_CONTAINER=yes scripts/build.sh
+----
+
+== Starting a container and testing the application
+.Starting the image
+[source, bash]
+----
+docker run \
+  --detach \
+  --rm \
+  --publish 8080:8080 \
+  --name go-gin-qr \
+  localhost/turing85/go-gin-qr:latest
+----
+
+To test the application, access link:http://localhost:8080/qr-code/foo%20bar%20baz[]
+
+== Stopping the container
+.Stopping the container
+[source, bash]
+----
+docker stop go-gin-qr
+----
+
+== Contributors ✨
+
+Thanks goes to these wonderful people (https://allcontributors.org/docs/en/emoji-key[emoji key]):
+
+++++
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+++++

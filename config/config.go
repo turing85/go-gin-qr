@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/kelseyhightower/envconfig"
@@ -9,78 +8,117 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type Config struct {
-	Http    http    `yaml:"http"`
-	Metrics metrics `yaml:"metrics"`
-	Qr      qr      `yaml:"qr"`
-}
-
-type http struct {
-	Host string `yaml:"host" envconfig:"HTTP_HOST"`
-	Port int    `yaml:"port" envconfig:"HTTP_PORT"`
-}
-
-type metrics struct {
-	Path string `yaml:"path" envconfig:"METRICS_PATH"`
-}
-
-type qr struct {
-	Path string `yaml:"path" envconfig:"QR_PATH"`
-}
-
 const configFileName = "config.yml"
 
-var emptyConfig = Config{}
-
-var config = emptyConfig
-
-var defaultConfig = Config{
-	http{
-		Host: "0.0.0.0",
-		Port: 8080,
-	},
-	metrics{
-		Path: "/metrics",
-	},
-	qr{
-		Path: "/qr-code",
-	},
+type Config interface {
+	Health() WithPath
+	Http() Http
+	Metrics() WithPath
+	Qr() WithPath
 }
+
+type config struct {
+	Health_  health  `yaml:"health"`
+	Http_    http    `yaml:"http"`
+	Metrics_ metrics `yaml:"metrics"`
+	Qr_      qr      `yaml:"qr"`
+}
+
+func (c *config) Health() WithPath {
+	return &c.Health_
+}
+
+func (c *config) Http() Http {
+	return &c.Http_
+}
+
+func (c *config) Metrics() WithPath {
+	return &c.Metrics_
+}
+
+func (c *config) Qr() WithPath {
+	return &c.Qr_
+}
+
+func newDefaultConfig() *config {
+	return &config{
+		health{
+			Path_: "/health",
+		},
+		http{
+			Host_: "0.0.0.0",
+			Port_: 8080,
+		},
+		metrics{
+			Path_: "/metrics",
+		},
+		qr{
+			Path_: "/qr-code",
+		},
+	}
+}
+
+var config_ *config = nil
 
 func GetConfig() Config {
-	if config == emptyConfig {
-		config = enhanceConfigFromEnv(
-			readConfigFromFile())
+	if config_ == nil {
+		config_ = newDefaultConfig().
+			enhanceFromFile().
+			enhanceFromEnv()
 	}
-	return config
+	return config_
 }
 
-func readConfigFromFile() Config {
-	if _, err := os.Stat(configFileName); err != nil {
-		log.Info().Msg(fmt.Sprintf(`Config file "%s" not found; using default configuration`, configFileName))
-		return defaultConfig
+func (c *config) enhanceFromFile() *config {
+	if fallback := getFallbackIfConfigFileAbsent(); fallback != nil {
+		return fallback
 	}
+	return c.openAndReadConfigFile()
+}
+
+func getFallbackIfConfigFileAbsent() *config {
+	if _, err := os.Stat(configFileName); err != nil {
+		log.Info().Msgf(
+			`Config file "%s" not found; using default configuration. Cause: %s`,
+			configFileName,
+			err)
+		return newDefaultConfig()
+	}
+	return nil
+}
+
+func (c *config) openAndReadConfigFile() *config {
 	file, err := os.Open(configFileName)
 	defer func() {
 		_ = file.Close()
 	}()
 	if err != nil {
-		// do something
+		log.Warn().Msgf(
+			`Error opening config_ file "%s"; using default configuration. Cause: %s`,
+			configFileName,
+			err)
+		return newDefaultConfig()
 	}
-	config := defaultConfig
-	if err = yaml.NewDecoder(file).Decode(&config); err != nil {
-		log.Warn().Msg(fmt.Sprintf(`Error reading config file "%s"; using default configuration"`, configFileName))
-		return defaultConfig
-	}
-	return config
+	return c.parseYaml(file)
 }
 
-func enhanceConfigFromEnv(config Config) Config {
-	copyConfig := config
-	if err := envconfig.Process("", &copyConfig); err != nil {
-		log.Warn().Msg(fmt.Sprintf(`Error reading environment; skipping: %s`, err))
-	} else {
-		config = copyConfig
+func (c *config) parseYaml(file *os.File) *config {
+	enhanced := *c
+	if err := yaml.NewDecoder(file).Decode(&enhanced); err != nil {
+		log.Warn().Msgf(
+			`Error reading config_ file "%s"; using default configuration. Cause: %s`,
+			configFileName,
+			err)
+		return c
 	}
-	return config
+	return &enhanced
+}
+
+func (c *config) enhanceFromEnv() *config {
+	enhanced := *c
+	if err := envconfig.Process("", &enhanced); err != nil {
+		log.Warn().Msgf(`Error reading environment; skipping. Cause: %s`, err)
+		return c
+	}
+	return &enhanced
 }

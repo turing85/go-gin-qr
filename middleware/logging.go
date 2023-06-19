@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func DefaultStructuredLogger() gin.HandlerFunc {
+func defaultStructuredLogger() gin.HandlerFunc {
 	return structuredLogger(&log.Logger)
 }
 

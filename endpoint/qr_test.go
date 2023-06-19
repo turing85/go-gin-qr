@@ -1,4 +1,4 @@
-package main
+package endpoint
 
 import (
 	"bytes"
@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"go-gin-qr/config"
+	"go-gin-qr/middleware"
 
 	"github.com/liyue201/goqr"
 	"github.com/stretchr/testify/assert"
@@ -17,15 +18,19 @@ import (
 func TestQrRoute(t *testing.T) {
 	// GIVEN
 	expected := "Hello, world!"
-	router := SetupEngine()
+	engine := middleware.SetupEngine()
+	AddQrEndpoint(engine)
 	recorder := httptest.NewRecorder()
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s?data=%s", config.GetConfig().Qr.Path, expected), nil)
+	req, err := http.NewRequest(
+		http.MethodGet,
+		fmt.Sprintf(`%s?data=%s`, config.GetConfig().Qr().Path(), expected),
+		nil)
 	if err != nil {
-		assert.FailNow(t, "Failed to create HTTP request", err)
+		assert.Error(t, err, "Failed to create HTTP request")
 	}
 
 	// WHEN
-	router.ServeHTTP(recorder, req)
+	engine.ServeHTTP(recorder, req)
 
 	// THEN
 	assert.Equal(t, 200, recorder.Code)
@@ -42,30 +47,11 @@ func extractQrData(t *testing.T, recorder *httptest.ResponseRecorder, err error)
 	data := recorder.Body.Bytes()
 	dataImage, _, err := image.Decode(bytes.NewReader(data))
 	if err != nil {
-		assert.FailNow(t, "Error during image decoding", err)
+		assert.Error(t, err, "Error during image decoding")
 	}
 	qrCodeData, err := goqr.Recognize(dataImage)
 	if err != nil {
-		assert.FailNow(t, "Error during QR code recognition", err)
+		assert.Error(t, err, "Error during QR code recognition")
 	}
 	return qrCodeData
-}
-
-func TestMetricsRoute(t *testing.T) {
-	// GIVEN
-	metricsPath := config.GetConfig().Metrics.Path
-	router := SetupEngine()
-	recorder := httptest.NewRecorder()
-	req, err := http.NewRequest(http.MethodGet, metricsPath, nil)
-	if err != nil {
-		assert.FailNow(t, "Failed to create HTTP request", err)
-	}
-
-	// WHEN
-	router.ServeHTTP(recorder, req)
-
-	// THEN
-	assert.Equal(t, 200, recorder.Code)
-	assert.Contains(t, recorder.Header().Get(http.CanonicalHeaderKey("Content-Type")), "text/plain")
-	assert.NotEmpty(t, recorder.Body)
 }

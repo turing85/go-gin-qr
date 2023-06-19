@@ -4,10 +4,16 @@ set -e
 cd "$(dirname "$(realpath -s "$0")")" || exit 1
 
 function clean() {
-  cd ..
+  echo "========================================"
+  echo "Running go clean"
   go clean
+  echo "----------------------------------------"
+  echo "Removing auxiliary files"
+  cd ..
   rm -rf app
   rm -rf app.upx
+  rm -rf profile.cov
+  echo "========================================"
 }
 
 clean "${@}"

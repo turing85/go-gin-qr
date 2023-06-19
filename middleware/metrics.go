@@ -7,9 +7,9 @@ import (
 	"github.com/penglongli/gin-metrics/ginmetrics"
 )
 
-func InitializeMetrics(engine *gin.Engine) *gin.Engine {
+func initializeMetrics(engine *gin.Engine) *gin.Engine {
 	metrics := ginmetrics.GetMonitor()
-	metrics.SetMetricPath(config.GetConfig().Metrics.Path)
+	metrics.SetMetricPath(config.GetConfig().Metrics().Path())
 	metrics.Use(engine)
 	return engine
 }

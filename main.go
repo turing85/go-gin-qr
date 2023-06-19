@@ -2,39 +2,19 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
 	"go-gin-qr/config"
+	"go-gin-qr/endpoint"
 	"go-gin-qr/middleware"
 
-	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	"github.com/skip2/go-qrcode"
 )
 
 func main() {
-	engine := SetupEngine()
-	_ = engine.Run(fmt.Sprintf(":%d", config.GetConfig().Http.Port))
-}
-
-func SetupEngine() *gin.Engine {
-	engine := middleware.InitializeEngine(
-		middleware.DefaultStructuredLogger(),
-		gin.Recovery())
-
-	engine.GET(config.GetConfig().Qr.Path, getQrCode)
-	return engine
-}
-
-func getQrCode(context *gin.Context) {
-	var text = context.Query("data")
-	log.Info().Msg(fmt.Sprintf(`Generating QR-code for string "%s"`, text))
-	png, err := qrcode.Encode(text, qrcode.Medium, 250)
-	if err == nil {
-		context.Header(http.CanonicalHeaderKey("Content-Disposition"), "inline")
-		context.Data(200, "image/png", png)
-	} else {
-		log.Error().Msg(fmt.Sprintf(`Error-Code: %d`, err))
-		context.String(500, "Internal server error")
-	}
+	fmt.Println(config.GetConfig())
+	engine := middleware.SetupEngine()
+	endpoint.AddQrEndpoint(engine)
+	port := config.GetConfig().Http().Port()
+	log.Info().Msgf(`Starting HTTP Server on port %d`, port)
+	_ = engine.Run(fmt.Sprintf(":%d", port))
 }

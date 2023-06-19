@@ -14,7 +14,12 @@ function build_go() {
     -v `# print the name of the packages`
   echo "----------------------------------------"
   echo "Running tests"
-  go test
+  go test \
+    -cover \
+    -coverpkg=./... \
+    -coverprofile=profile.cov \
+    ./... \
+    && go tool cover --func profile.cov
   echo "----------------------------------------"
   echo "Building application"
   CGO_ENABLED=0 `# Enable static linking` \

@@ -19,7 +19,7 @@ func TestQrRoute(t *testing.T) {
 	expected := "Hello, world!"
 	router := SetupEngine()
 	recorder := httptest.NewRecorder()
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/%s", config.GetConfig().Qr.Path, expected), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s?data=%s", config.GetConfig().Qr.Path, expected), nil)
 	if err != nil {
 		assert.FailNow(t, "Failed to create HTTP request", err)
 	}

@@ -22,12 +22,12 @@ func SetupEngine() *gin.Engine {
 		middleware.DefaultStructuredLogger(),
 		gin.Recovery())
 
-	engine.GET(fmt.Sprintf(`%s/:data`, config.GetConfig().Qr.Path), getQrCode)
+	engine.GET(config.GetConfig().Qr.Path, getQrCode)
 	return engine
 }
 
 func getQrCode(context *gin.Context) {
-	var text = context.Param("data")
+	var text = context.Query("data")
 	log.Info().Msg(fmt.Sprintf(`Generating QR-code for string "%s"`, text))
 	png, err := qrcode.Encode(text, qrcode.Medium, 250)
 	if err == nil {

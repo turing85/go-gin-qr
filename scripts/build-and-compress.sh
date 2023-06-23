@@ -6,7 +6,6 @@ source build-commons.sh
 
 function build() {
   cd ..
-  BUILD_CONTAINER="yes"
   build_go
   compress
   build_container "Containerfile"

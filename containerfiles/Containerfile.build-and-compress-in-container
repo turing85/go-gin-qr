@@ -1,5 +1,5 @@
 ARG BUILDER_IMAGE="docker.io/golang:1.20.5-bookwork@sha256:3164c26b2e170b18e2325aa0554699e7bb19a658333601659c04838855897f7a"
-ARG COMPRESSOR_BASE_IMAGE="docker.io/alpoine:3.18.2@sha256:25fad2a32ad1f6f510e528448ae1ec69a28ef81916a004d3629874104f8a7f70"
+ARG COMPRESSOR_BASE_IMAGE="docker.io/bash:alpine3.18@sha256:8448d0fcfe53df415e74245699d511ee8e079c9e151bf1d208b5afdd5e08afb9"
 
 FROM ${BUILDER_IMAGE} AS builder
 WORKDIR /project
@@ -14,13 +14,18 @@ ARG UPX_INSTALLATION_COMMAND="apk add \
     libstdc++=12.2.1_git20220924-r10 \
     upx=4.0.2-r0 \
   && rm -rf /var/cache/apt/*"
+ARG UPX_COMPRESSION_MODE="--best"
 RUN eval "${UPX_INSTALLATION_COMMAND}"
 WORKDIR /project
 COPY \
   --from=builder \
   --chmod=777 \
+  /project/scripts/build-commons.sh /project/scripts/
+COPY \
+  --from=builder \
+  --chmod=777 \
   /project/app ./
-RUN upx --brute app
+RUN source /project/scripts/build-commons.sh && compress
 
 FROM scratch AS runner
 COPY \
@@ -30,6 +35,6 @@ COPY \
 COPY \
   --from=compressor \
   --chmod=111 \
-  /project/app ./
+  /project/app ./app
 
 ENTRYPOINT [ "./app" ]

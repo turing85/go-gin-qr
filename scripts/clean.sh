@@ -11,7 +11,7 @@ function clean() {
   echo "Removing auxiliary files"
   cd ..
   rm -rf app
-  rm -rf app.upx
+  rm -rf app.*
   rm -rf profile.cov
   echo "========================================"
 }

@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 set -e
 
+function build_go() {
+  echo "========================================"
+  echo "Getting dependencies"
+  go clean
+  go get \
+    -d `# only get dependencies, do not install them` \
+    -t `# get test dependencies` \
+    -v `# print the name of the packages` \
+    ./...
+  echo "========================================"
+  echo "Running tests"
+  go test ./...
+  echo "========================================"
+  echo "Building application"
+  go build \
+    -ldflags="-s -w" `# omit symbol table (-s) and DWARF symbol table (-w)` \
+    -o app \
+    -tags netgo
+}
+
 function get_registry() {
   echo "${REGISTRY:-localhost}"
 }
@@ -18,8 +38,10 @@ function get_image_tag() {
 }
 
 function has_command() {
-  if ! [ -x "$(command -v "${1}")" ]
+  if [ -x "$(command -v "${1}")" ]
   then
+    return 0
+  else
     return 1
   fi
 }
@@ -52,10 +74,15 @@ function get_command() {
     fi
 }
 
+function upx_compression_mode() {
+  echo "${UPX_COMPRESSION_MODE:---best}"
+}
+
 function construct_full_build_command() {
   local backslash=\\
   cat <<EOF
 ${1} build ${backslash}
+  --build-arg UPX_COMPRESSION_MODE=$(upx_compression_mode) ${backslash}
   --file $(pwd)/containerfiles/${2} ${backslash}
   --format oci ${backslash}
   --tag "$(get_registry)/$(get_registry_repository)/$(get_image_name):$(get_image_tag)" ${backslash}
@@ -87,7 +114,25 @@ function build_container() {
     echo "Full build command:"
     echo
     echo "$full_build_command"
-    echo "========================================"
+    echo "----------------------------------------"
     eval "$full_build_command"
   fi
+}
+
+function compress() {
+  echo "========================================"
+  echo "Compressing application"
+  local backslash=\\
+  local upx_command
+  upx_command=$(cat<<EOF
+upx ${backslash}
+  $(upx_compression_mode) ${backslash}
+  app
+EOF
+)
+  echo "Full upx-command:"
+  echo
+  echo "${upx_command}"
+  echo "----------------------------------------"
+  eval "${upx_command}"
 }

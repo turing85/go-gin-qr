@@ -7,8 +7,8 @@ function maintenance() {
   echo "========================================"
   echo "Running go get"
   go get \
-    -t \
-    -u \
+    -t `# get test dependencies` \
+    -u `# update modules` \
     ./...
   echo "----------------------------------------"
   echo "Running go vet"

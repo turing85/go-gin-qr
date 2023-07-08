@@ -5,18 +5,18 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"go-gin-qr/config"
-
 	"github.com/stretchr/testify/assert"
+
+	"go-gin-qr/internal/config"
 )
 
-func TestHealthRoute(t *testing.T) {
+func TestMetricsRoute(t *testing.T) {
 	// GIVEN
 	router := SetupEngine()
 	recorder := httptest.NewRecorder()
-	req, err := http.NewRequest(http.MethodGet, config.GetConfig().Health().Path(), nil)
+	req, err := http.NewRequest(http.MethodGet, config.GetConfig().Metrics().Path(), nil)
 	if err != nil {
-		assert.Error(t, err, "Failed to create HTTP request")
+		t.Fatalf("Failure during HTTP request creation: %s", err)
 	}
 
 	// WHEN
@@ -24,6 +24,6 @@ func TestHealthRoute(t *testing.T) {
 
 	// THEN
 	assert.Equal(t, 200, recorder.Code)
-	assert.Contains(t, recorder.Header().Get(http.CanonicalHeaderKey("Content-Type")), "application/json")
+	assert.Contains(t, recorder.Header().Get(http.CanonicalHeaderKey("Content-Type")), "text/plain")
 	assert.NotEmpty(t, recorder.Body)
 }

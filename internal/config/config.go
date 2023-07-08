@@ -8,8 +8,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const configFileName = "config.yml"
-
 type Config interface {
 	Health() WithPath
 	Http() Http
@@ -40,62 +38,35 @@ func (c *config) Qr() WithPath {
 	return &c.Qr_
 }
 
-func newDefaultConfig() *config {
-	return &config{
-		health{
-			Path_: "/health",
-		},
-		http{
-			Host_: "0.0.0.0",
-			Port_: 8080,
-		},
-		metrics{
-			Path_: "/metrics",
-		},
-		qr{
-			Path_: "/qr-code",
-		},
-	}
-}
-
-var config_ *config = nil
-
-func GetConfig() Config {
-	if config_ == nil {
-		config_ = newDefaultConfig().
-			enhanceFromFile().
-			enhanceFromEnv()
-	}
-	return config_
-}
-
-func (c *config) enhanceFromFile() *config {
-	if fallback := getFallbackIfConfigFileAbsent(); fallback != nil {
-		return fallback
-	}
-	return c.openAndReadConfigFile()
-}
-
-func getFallbackIfConfigFileAbsent() *config {
-	if _, err := os.Stat(configFileName); err != nil {
+func (c *config) enhanceFromFile(configFile string) *config {
+	if err := configFileIsReadable(configFile); err != nil {
 		log.Info().Msgf(
-			`Config file "%s" not found; using default configuration. Cause: %s`,
-			configFileName,
+			`Config file "%s" not readable; using default configuration. Cause: %s`,
+			configFile,
 			err)
 		return newDefaultConfig()
+	}
+	return c.openAndReadConfigFile(configFile)
+}
+
+func configFileIsReadable(configFile string) error {
+	if _, err := os.Stat(configFile); err != nil {
+		return err
 	}
 	return nil
 }
 
-func (c *config) openAndReadConfigFile() *config {
-	file, err := os.Open(configFileName)
+func (c *config) openAndReadConfigFile(configFile string) *config {
+	file, err := os.Open(configFile)
 	defer func() {
-		_ = file.Close()
+		if err = file.Close(); err != nil {
+			log.Warn().Msgf(`Unable to close file. Cause: %s`, err)
+		}
 	}()
 	if err != nil {
 		log.Warn().Msgf(
-			`Error opening config_ file "%s"; using default configuration. Cause: %s`,
-			configFileName,
+			`Error opening config file "%s"; using default configuration. Cause: %s`,
+			defaultConfigFile,
 			err)
 		return newDefaultConfig()
 	}
@@ -106,8 +77,8 @@ func (c *config) parseYaml(file *os.File) *config {
 	enhanced := *c
 	if err := yaml.NewDecoder(file).Decode(&enhanced); err != nil {
 		log.Warn().Msgf(
-			`Error reading config_ file "%s"; using default configuration. Cause: %s`,
-			configFileName,
+			`Error reading config file "%s"; using default configuration. Cause: %s`,
+			defaultConfigFile,
 			err)
 		return c
 	}

@@ -4,6 +4,6 @@ COPY \
   app config.yml ./
 COPY \
   --chmod=111 \
-  app ./
+  cmd/app ./
 
 ENTRYPOINT [ "./app" ]

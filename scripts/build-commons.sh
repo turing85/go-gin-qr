@@ -17,7 +17,7 @@ function build_go() {
   echo "Building application"
   go build \
     -ldflags="-s -w" `# omit symbol table (-s) and DWARF symbol table (-w)` \
-    -o app \
+    -o cmd/app \
     -tags netgo
 }
 
@@ -83,7 +83,7 @@ function construct_full_build_command() {
   cat <<EOF
 ${1} build ${backslash}
   --build-arg UPX_COMPRESSION_MODE=$(upx_compression_mode) ${backslash}
-  --file $(pwd)/containerfiles/${2} ${backslash}
+  --file $(pwd)/build/package/containerfiles/${2} ${backslash}
   --format oci ${backslash}
   --tag "$(get_registry)/$(get_registry_repository)/$(get_image_name):$(get_image_tag)" ${backslash}
   --target runner ${backslash}
@@ -127,7 +127,7 @@ function compress() {
   upx_command=$(cat<<EOF
 upx ${backslash}
   $(upx_compression_mode) ${backslash}
-  app
+  cmd/app
 EOF
 )
   echo "Full upx-command:"

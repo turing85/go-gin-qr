@@ -9,13 +9,13 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/tavsec/gin-healthcheck"
 	"github.com/tavsec/gin-healthcheck/checks"
-	ginhealthcheckconfig "github.com/tavsec/gin-healthcheck/config"
+	gin_healthcheck_config "github.com/tavsec/gin-healthcheck/config"
 )
 
 func addHealthChecks(engine *gin.Engine) {
 	err := gin_healthcheck.New(
 		engine,
-		ginhealthcheckconfig.Config{
+		gin_healthcheck_config.Config{
 			HealthPath:  config.GetConfig().Health().Path(),
 			Method:      http.MethodGet,
 			StatusOK:    http.StatusOK,

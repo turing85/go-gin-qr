@@ -2,12 +2,13 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/mrsimonemms/gin-structured-logger"
 	"github.com/rs/zerolog/log"
 )
 
 func SetupEngine() *gin.Engine {
 	engine := initializeEngine(
-		defaultStructuredLogger(),
+		ginstructuredlogger.New(),
 		gin.Recovery())
 	addHealthChecks(engine)
 	return engine

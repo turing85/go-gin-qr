@@ -3,19 +3,19 @@ package middleware
 import (
 	"net/http"
 
-	"go-gin-qr/config"
-
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/tavsec/gin-healthcheck"
 	"github.com/tavsec/gin-healthcheck/checks"
-	gin_healthcheck_config "github.com/tavsec/gin-healthcheck/config"
+	healthconfig "github.com/tavsec/gin-healthcheck/config"
+
+	"go-gin-qr/internal/config"
 )
 
 func addHealthChecks(engine *gin.Engine) {
 	err := gin_healthcheck.New(
 		engine,
-		gin_healthcheck_config.Config{
+		healthconfig.Config{
 			HealthPath:  config.GetConfig().Health().Path(),
 			Method:      http.MethodGet,
 			StatusOK:    http.StatusOK,

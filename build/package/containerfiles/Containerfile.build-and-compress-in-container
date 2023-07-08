@@ -24,7 +24,7 @@ COPY \
 COPY \
   --from=builder \
   --chmod=777 \
-  /project/app ./
+  /project/cmd/app ./
 RUN source /project/scripts/build-commons.sh && compress
 
 FROM scratch AS runner

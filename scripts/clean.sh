@@ -10,9 +10,7 @@ function clean() {
   echo "----------------------------------------"
   echo "Removing auxiliary files"
   cd ..
-  rm -rf app
-  rm -rf app.*
-  rm -rf profile.cov
+  rm -rf cmd
   echo "========================================"
 }
 

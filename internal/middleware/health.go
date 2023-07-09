@@ -23,6 +23,6 @@ func addHealthChecks(engine *gin.Engine) {
 		},
 		[]checks.Check{})
 	if err != nil {
-		log.Warn().Msgf(`Failed to start health checks. Cause: %s`, err)
+		log.Warn().Msgf(`Failed to initialize health checks. Cause: %s`, err)
 	}
 }

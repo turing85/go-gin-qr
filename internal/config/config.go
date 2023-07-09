@@ -60,13 +60,13 @@ func (c *config) openAndReadConfigFile(configFile string) *config {
 	file, err := os.Open(configFile)
 	defer func() {
 		if err = file.Close(); err != nil {
-			log.Warn().Msgf(`Unable to close file. Cause: %s`, err)
+			log.Warn().Msgf(`Unable to close file "%s". Cause: %s`, configFile, err)
 		}
 	}()
 	if err != nil {
 		log.Warn().Msgf(
 			`Error opening config file "%s"; using default configuration. Cause: %s`,
-			defaultConfigFile,
+			configFile,
 			err)
 		return newDefaultConfig()
 	}

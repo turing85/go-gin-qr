@@ -7,20 +7,22 @@ import (
 
 const defaultConfigFile = "config.yml"
 
-var instance *config = nil
-var configMutex sync.Mutex
+var instance = struct {
+	config *config
+	mutex  sync.Mutex
+}{}
 
 func GetConfig() Config {
-	if instance == nil {
-		configMutex.Lock()
-		defer configMutex.Unlock()
-		if instance == nil {
-			instance = newDefaultConfig().
+	if instance.config == nil {
+		instance.mutex.Lock()
+		defer instance.mutex.Unlock()
+		if instance.config == nil {
+			instance.config = newDefaultConfig().
 				enhanceFromFile(getConfigFile()).
 				enhanceFromEnv()
 		}
 	}
-	return instance
+	return instance.config
 }
 
 func getConfigFile() string {

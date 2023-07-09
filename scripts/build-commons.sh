@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 set -e
 
+function clean() {
+  echo "========================================"
+  echo "Running go clean"
+  go clean
+  echo "----------------------------------------"
+  echo "Removing auxiliary files"
+  rm -rf cmd
+  echo "========================================"
+}
+
 function build_go() {
+  clean
   echo "========================================"
   echo "Getting dependencies"
   go clean

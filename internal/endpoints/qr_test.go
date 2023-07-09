@@ -18,8 +18,7 @@ import (
 func TestQrRoute(t *testing.T) {
 	// GIVEN
 	const expected = "Hello, world!"
-	engine := middleware.SetupEngine()
-	AddQrEndpoint(engine)
+	engine := AddQrEndpoint(middleware.SetupEngine())
 	recorder := httptest.NewRecorder()
 	req, err := http.NewRequest(
 		http.MethodGet,

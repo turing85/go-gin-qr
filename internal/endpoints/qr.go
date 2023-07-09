@@ -19,7 +19,8 @@ func AddQrEndpoint(engine *gin.Engine) *gin.Engine {
 func getQrCode(context *gin.Context) {
 	var text = context.Query("data")
 	log.Info().Msgf(`Generating QR-code for string "%s"`, text)
-	if png, err := qrcode.Encode(text, qrcode.Medium, 250); err != nil {
+	png, err := qrcode.Encode(text, qrcode.Medium, 250)
+	if err != nil {
 		ginstructuredlogger.Get(context).Error().Msgf(`Error-Code: %d`, err)
 		context.String(500, "Internal server error")
 	} else {

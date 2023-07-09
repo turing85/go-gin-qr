@@ -1,6 +1,5 @@
 .idea/
 build/package/containerfiles
-cmd/
 
 *.iml
 .dockerignore

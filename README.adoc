@@ -20,13 +20,13 @@ BUILD_CONTAINER=yes scripts/build.sh
 ----
 docker run \
   --detach \
-  --rm \
-  --publish 8080:8080 \
   --name go-gin-qr \
+  --publish 8080:8080 \
+  --rm \
   localhost/turing85/go-gin-qr:latest
 ----
 
-To test the application, access link:http://localhost:8080/qr-code/foo%20bar%20baz[]
+To test the application, access link:http://localhost:8080/qr-code?data=foo%20bar%20baz[]
 
 == Stopping the container
 .Stopping the container

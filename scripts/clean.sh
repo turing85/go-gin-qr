@@ -2,16 +2,7 @@
 set -e
 
 cd "$(dirname "$(realpath -s "$0")")" || exit 1
+source build-commons.sh
 
-function clean() {
-  echo "========================================"
-  echo "Running go clean"
-  go clean
-  echo "----------------------------------------"
-  echo "Removing auxiliary files"
-  cd ..
-  rm -rf cmd
-  echo "========================================"
-}
-
+cd ..
 clean "${@}"

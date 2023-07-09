@@ -10,6 +10,7 @@ func SetupEngine() *gin.Engine {
 	engine := initializeEngine(
 		ginstructuredlogger.New(),
 		gin.Recovery())
+	initializeMetrics(engine)
 	addHealthChecks(engine)
 	return engine
 }
@@ -21,6 +22,5 @@ func initializeEngine(middleware ...gin.HandlerFunc) *gin.Engine {
 		log.Error().Msgf(`Configuring trusted proxies failed. Terminating. Cause: %s`, err)
 		panic(err)
 	}
-	initializeMetrics(engine)
 	return engine
 }

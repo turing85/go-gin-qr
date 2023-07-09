@@ -12,7 +12,7 @@ import (
 
 func TestHealthRoute(t *testing.T) {
 	// GIVEN
-	router := SetupEngine()
+	engine := SetupEngine()
 	recorder := httptest.NewRecorder()
 	req, err := http.NewRequest(http.MethodGet, config.GetConfig().Health().Path(), nil)
 	if err != nil {
@@ -20,7 +20,7 @@ func TestHealthRoute(t *testing.T) {
 	}
 
 	// WHEN
-	router.ServeHTTP(recorder, req)
+	engine.ServeHTTP(recorder, req)
 
 	// THEN
 	assert.Equal(t, 200, recorder.Code)

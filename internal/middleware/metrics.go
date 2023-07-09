@@ -7,9 +7,8 @@ import (
 	"go-gin-qr/internal/config"
 )
 
-func initializeMetrics(engine *gin.Engine) *gin.Engine {
+func initializeMetrics(engine *gin.Engine) {
 	metrics := ginmetrics.GetMonitor()
 	metrics.SetMetricPath(config.GetConfig().Metrics().Path())
 	metrics.Use(engine)
-	return engine
 }

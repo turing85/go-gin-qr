@@ -3,12 +3,10 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/penglongli/gin-metrics/ginmetrics"
-
-	"go-gin-qr/internal/config"
 )
 
-func initializeMetrics(engine *gin.Engine) {
+func initializeMetrics(engine *gin.Engine, metricsPath string) {
 	metrics := ginmetrics.GetMonitor()
-	metrics.SetMetricPath(config.GetConfig().Metrics().Path())
+	metrics.SetMetricPath(metricsPath)
 	metrics.Use(engine)
 }

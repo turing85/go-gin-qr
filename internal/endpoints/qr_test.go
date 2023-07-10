@@ -11,18 +11,19 @@ import (
 	"github.com/liyue201/goqr"
 	"github.com/stretchr/testify/assert"
 
-	"go-gin-qr/internal/config"
+	"go-gin-qr/internal/appconfig"
 	"go-gin-qr/internal/middleware"
 )
 
 func TestQrRoute(t *testing.T) {
 	// GIVEN
 	const expected = "Hello, world!"
-	engine := AddQrEndpoint(middleware.SetupEngine())
+	appConfig := appconfig.GetConfig()
+	engine := AddQrEndpoint(middleware.SetupEngine(appConfig), appConfig.Qr().Path())
 	recorder := httptest.NewRecorder()
 	req, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf(`%s?data=%s`, config.GetConfig().Qr().Path(), expected),
+		fmt.Sprintf(`%s?data=%s`, appConfig.Qr().Path(), expected),
 		nil)
 	if err != nil {
 		t.Fatalf("Failure during HTTP request creation: %s", err)

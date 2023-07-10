@@ -1,4 +1,4 @@
-package config
+package appconfig
 
 type health struct {
 	Path_ string `yaml:"path" envconfig:"HEALTH_PATH"`

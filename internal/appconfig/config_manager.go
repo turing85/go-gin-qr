@@ -1,4 +1,4 @@
-package config
+package appconfig
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 const defaultConfigFile = "config.yml"
 
 var instance = struct {
-	config *config
+	config Config
 	mutex  sync.Mutex
 }{}
 

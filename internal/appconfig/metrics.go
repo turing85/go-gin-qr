@@ -1,4 +1,4 @@
-package config
+package appconfig
 
 type metrics struct {
 	Path_ string `yaml:"path" envconfig:"METRICS_PATH"`

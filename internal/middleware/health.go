@@ -8,15 +8,13 @@ import (
 	"github.com/tavsec/gin-healthcheck"
 	"github.com/tavsec/gin-healthcheck/checks"
 	healthconfig "github.com/tavsec/gin-healthcheck/config"
-
-	"go-gin-qr/internal/config"
 )
 
-func addHealthChecks(engine *gin.Engine) {
+func initializeHealthPath(engine *gin.Engine, healthPath string) {
 	err := gin_healthcheck.New(
 		engine,
 		healthconfig.Config{
-			HealthPath:  config.GetConfig().Health().Path(),
+			HealthPath:  healthPath,
 			Method:      http.MethodGet,
 			StatusOK:    http.StatusOK,
 			StatusNotOK: http.StatusServiceUnavailable,

@@ -1,4 +1,4 @@
-package config
+package appconfig
 
 type Http interface {
 	Host() string

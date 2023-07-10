@@ -6,12 +6,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func SetupEngine() *gin.Engine {
+type EngineConfig interface {
+	HealthPath() string
+	MetricsPath() string
+}
+
+func SetupEngine(config EngineConfig) *gin.Engine {
 	engine := initializeEngine(
 		ginstructuredlogger.New(),
 		gin.Recovery())
-	initializeMetrics(engine)
-	addHealthChecks(engine)
+	initializeHealthPath(engine, config.HealthPath())
+	initializeMetrics(engine, config.MetricsPath())
 	return engine
 }
 

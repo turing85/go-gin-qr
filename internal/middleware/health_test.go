@@ -7,14 +7,15 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"go-gin-qr/internal/config"
+	"go-gin-qr/internal/appconfig"
 )
 
 func TestHealthRoute(t *testing.T) {
 	// GIVEN
-	engine := SetupEngine()
+	appConfig := appconfig.GetConfig()
+	engine := SetupEngine(appConfig)
 	recorder := httptest.NewRecorder()
-	req, err := http.NewRequest(http.MethodGet, config.GetConfig().Health().Path(), nil)
+	req, err := http.NewRequest(http.MethodGet, appConfig.Health().Path(), nil)
 	if err != nil {
 		t.Fatalf("Failure during HTTP request creation: %s", err)
 	}

@@ -1,19 +1,11 @@
-package config
+package appconfig
 
 import (
-	"os"
-
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
+	"os"
 )
-
-type Config interface {
-	Health() WithPath
-	Http() Http
-	Metrics() WithPath
-	Qr() WithPath
-}
 
 type config struct {
 	Health_  health  `yaml:"health"`
@@ -36,6 +28,14 @@ func (c *config) Metrics() WithPath {
 
 func (c *config) Qr() WithPath {
 	return &c.Qr_
+}
+
+func (c *config) HealthPath() string {
+	return c.Health().Path()
+}
+
+func (c *config) MetricsPath() string {
+	return c.Metrics().Path()
 }
 
 func (c *config) enhanceFromFile(configFile string) *config {

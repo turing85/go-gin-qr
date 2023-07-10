@@ -7,12 +7,10 @@ import (
 	"github.com/mrsimonemms/gin-structured-logger"
 	"github.com/rs/zerolog/log"
 	"github.com/skip2/go-qrcode"
-
-	"go-gin-qr/internal/config"
 )
 
-func AddQrEndpoint(engine *gin.Engine) *gin.Engine {
-	engine.GET(config.GetConfig().Qr().Path(), getQrCode)
+func AddQrEndpoint(engine *gin.Engine, qrPath string) *gin.Engine {
+	engine.GET(qrPath, getQrCode)
 	return engine
 }
 

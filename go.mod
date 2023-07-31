@@ -8,7 +8,7 @@ require (
 	github.com/liyue201/goqr v0.0.0-20200803022322-df443203d4ea
 	github.com/mrsimonemms/gin-structured-logger v0.2.0
 	github.com/penglongli/gin-metrics v0.1.10
-	github.com/rs/zerolog v1.29.1
+	github.com/rs/zerolog v1.30.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.8.4
 	github.com/tavsec/gin-healthcheck v1.4.0

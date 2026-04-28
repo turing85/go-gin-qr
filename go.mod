@@ -1,13 +1,13 @@
 module go-gin-qr
 
-go 1.20
+go 1.22
 
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/liyue201/goqr v0.0.0-20200803022322-df443203d4ea
 	github.com/mrsimonemms/gin-structured-logger v0.2.0
-	github.com/penglongli/gin-metrics v0.1.10
+	github.com/penglongli/gin-metrics v0.1.13
 	github.com/rs/zerolog v1.33.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.9.0
@@ -64,10 +64,10 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.mongodb.org/mongo-driver v1.16.1 // indirect
 	golang.org/x/arch v0.8.0 // indirect
-	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/net v0.25.0 // indirect
+	golang.org/x/crypto v0.28.0 // indirect
+	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/text v0.19.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
 )
